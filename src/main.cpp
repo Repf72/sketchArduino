@@ -1,29 +1,45 @@
 #include <Arduino.h>
 
-String bajo = "Buenos dias";
-String medio = "Buenas tardes";
-String alto = "Buenas noches";
-
-int pote = A0;
+String nivelesHor[3]= {"Izquierda", "Centro", "Derecha"};
+String nivelesVer[3]= {"Abajo", "A nivel", "Arriba"};
+String etiqHor, etiqVer;
+int nivel[2] = {2, 3};
+int poteHor = A0;
+int poteVer = A1;
 
 void setup() {
   Serial.begin(9600);
 }
 
 void loop() {
-  int lectura = analogRead(pote);
-  float voltaje = lectura*5.0/1023.0;
-  //Serial.print(voltaje);
-  //Serial.print("Volts \n");
+  int lectHor = analogRead(poteHor);
+  int lectVer = analogRead(poteVer);
+  float voltHor = lectHor*5.0/1023.0;
+  float voltVer = lectVer*5.0/1023.0;
 
-  if (voltaje <= 1.5) {
-    Serial.println(String(voltaje) + " " + bajo);
+  //Niveles horizontales
+  if (voltHor <= nivel[0]) {
+    etiqHor = nivelesHor[0];
   }
-  else if (voltaje > 1.6 && voltaje < 3.5){
-    Serial.println(String(voltaje) + " " + medio);
+  else if (voltHor > nivel[0] && voltHor <= nivel[1]){
+    etiqHor = nivelesHor[1];
   }
   else{
-    Serial.println(String(voltaje) + " " + alto);
+    etiqHor = nivelesHor[2];
   }
+
+  //Niveles verticales
+  if (voltVer <= nivel[0]) {
+    etiqVer = nivelesVer[0];
+  }
+  else if (voltVer > nivel[0] && voltVer <= nivel[1]){
+    etiqVer = nivelesVer[1];
+  }
+  else{
+    etiqVer = nivelesVer[2];
+  }
+
   delay(100);
+  Serial.println("Vertical (" + String(voltVer) + "): " + etiqVer
+        + " - Horizontal (" + String(voltHor) + "): " + etiqHor);
 }
